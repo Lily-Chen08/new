@@ -1,0 +1,3213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社团圈 · 发现与招募</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #1e293b;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .app-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* 防诈骗流动通告条 */
+        .notice-bar {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fcd34d;
+            border-radius: 999px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 6px 18px -10px rgba(180, 83, 9, 0.4);
+            overflow: hidden;
+        }
+
+        .notice-icon {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            margin: 0.3rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 10px -3px rgba(217, 119, 6, 0.6);
+        }
+
+        .notice-track {
+            flex: 1;
+            overflow: hidden;
+            padding: 0.65rem 0.5rem;
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+        }
+
+        .notice-track-inner {
+            display: flex;
+            width: max-content;
+            animation: notice-scroll 26s linear infinite;
+        }
+
+        .notice-bar:hover .notice-track-inner {
+            animation-play-state: paused;
+        }
+
+        .notice-text {
+            flex-shrink: 0;
+            padding-right: 3.5rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #92400e;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notice-text .dot {
+            color: #d97706;
+            font-size: 0.7rem;
+        }
+
+        @keyframes notice-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .notice-track-inner {
+                animation: none;
+            }
+        }
+
+        /* 头部区域（深色封面 + 手机样机） */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(900px 520px at 82% 8%, rgba(99, 102, 241, 0.30), transparent 60%),
+                radial-gradient(720px 460px at 72% 115%, rgba(147, 51, 234, 0.20), transparent 60%),
+                linear-gradient(135deg, #191a3d 0%, #2e2b5e 55%, #232055 100%);
+            border-radius: 2rem;
+            padding: 2.8rem 2.5rem 4.6rem;
+            margin-bottom: 2.5rem;
+            color: white;
+            box-shadow: 0 15px 30px -10px rgba(0, 20, 50, 0.3);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-left {
+            position: relative;
+            z-index: 2;
+            max-width: 560px;
+        }
+
+        /* 封面左下角大字水印（仿 UI/UX 样式） */
+        .hero-watermark {
+            position: absolute;
+            left: 2.5rem;
+            bottom: 1.2rem;
+            z-index: 1;
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            line-height: 1;
+            color: rgba(255, 255, 255, 0.95);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .hero-watermark em {
+            font-style: normal;
+            color: #8b8ff5;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero h1 i {
+            color: #ffd966;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 550px;
+            margin-top: 0.5rem;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            padding: 0.6rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* 头部手机样机 */
+        .hero-phone-wrap {
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            padding: 0.4rem 1.2rem 0;
+        }
+
+        .hero-phone-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -50px -70px;
+            background: radial-gradient(closest-side, rgba(99, 102, 241, 0.38), transparent);
+            filter: blur(12px);
+            z-index: -1;
+        }
+
+        .phone-mockup {
+            width: 252px;
+            background: #fff;
+            border-radius: 36px;
+            padding: 10px 10px 8px;
+            box-shadow: 0 34px 64px -22px rgba(0, 0, 15, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .phone-screen {
+            background: #f6f7fb;
+            border-radius: 27px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .phone-status .ph-icons {
+            display: flex;
+            gap: 5px;
+            font-size: 0.58rem;
+        }
+
+        .phone-feed {
+            padding: 4px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .feed-card {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+            background: #e2e8f0;
+        }
+
+        .feed-card img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .feed-card .feed-scrim {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 38%, rgba(10, 12, 40, 0.85));
+        }
+
+        .feed-dot {
+            position: absolute;
+            top: 9px;
+            right: 9px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.25);
+        }
+
+        .feed-caption {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 9px;
+            color: #fff;
+        }
+
+        .feed-caption .feed-tag {
+            display: inline-block;
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ffb347, #ff6b6b);
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-bottom: 4px;
+        }
+
+        .feed-caption p {
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.35;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+        }
+
+        .feed-duration {
+            position: absolute;
+            right: 9px;
+            bottom: 9px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 999px;
+        }
+
+        .feed-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 2px 4px 0;
+            color: #64748b;
+            font-size: 0.64rem;
+            font-weight: 600;
+        }
+
+        .feed-actions span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 样机底部导航栏：社团 / 消息 / 社区 / 现场 / 我的 */
+        .phone-tabbar {
+            background: #fff;
+            border-top: 1px solid #eef1f6;
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 14px 5px;
+        }
+
+        .ph-tab {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            min-width: 38px;
+            color: #94a3b8;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        .ph-tab i {
+            font-size: 1.05rem;
+        }
+
+        .ph-tab.active {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .ph-reddot {
+            position: absolute;
+            top: -2px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #f43f5e;
+        }
+
+        .ph-center {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            margin-top: -13px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.88rem;
+            box-shadow: 0 6px 14px -4px rgba(37, 99, 235, 0.75);
+        }
+
+        .ph-center em {
+            position: absolute;
+            top: -7px;
+            right: -9px;
+            font-style: normal;
+            font-size: 0.52rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            background: #f43f5e;
+            padding: 2.5px 5px;
+            border-radius: 999px;
+            border: 1.5px solid #fff;
+        }
+
+        .phone-indicator {
+            width: 86px;
+            height: 5px;
+            border-radius: 999px;
+            background: #0f172a;
+            margin: 8px auto 4px;
+        }
+
+        /* 样机周围漂浮小贴士 */
+        .float-chip {
+            position: absolute;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.96);
+            color: #1e293b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 7px 11px;
+            border-radius: 999px;
+            box-shadow: 0 12px 26px -10px rgba(0, 0, 20, 0.55);
+            white-space: nowrap;
+            animation: chip-float 4s ease-in-out infinite;
+        }
+
+        .float-chip.one {
+            top: 30px;
+            left: -46px;
+        }
+
+        .float-chip.two {
+            bottom: 92px;
+            right: -38px;
+            animation-delay: 2s;
+        }
+
+        @keyframes chip-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .float-chip { animation: none; }
+        }
+
+        @media (max-width: 900px) {
+            .hero-phone-wrap,
+            .hero-watermark {
+                display: none;
+            }
+            .hero {
+                padding: 2.4rem 1.8rem;
+            }
+        }
+
+        /* 搜索与筛选栏 */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 50px;
+            padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            flex: 1 1 300px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-box i {
+            color: #94a3b8;
+            margin-right: 0.6rem;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            padding: 0.8rem 0;
+            width: 100%;
+            background: transparent;
+        }
+
+        .search-box button {
+            background: #1e4a7a;
+            border: none;
+            color: white;
+            padding: 0.7rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        .search-box button:hover {
+            background: #0f2b5c;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-btn i {
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: #1e4a7a;
+            border-color: #1e4a7a;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #eef2f6;
+        }
+
+        .filter-btn.active:hover {
+            background: #0f2b5c;
+        }
+
+        /* 主网格 */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 2.5rem 0 1.2rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0f2b5c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title span {
+            color: #64748b;
+            font-size: 0.95rem;
+            background: white;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .clubs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .club-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9eef3;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        /* 卡片封面横幅 */
+        .club-cover {
+            position: relative;
+            height: 132px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #163a6b 0%, #2f6aa3 100%);
+            overflow: hidden;
+        }
+
+        .cover-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .cover-scrim {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 25, 50, 0.4) 0%, rgba(10, 25, 50, 0) 55%);
+            pointer-events: none;
+        }
+
+        .cover-tag {
+            position: absolute;
+            top: 0.8rem;
+            left: 0.9rem;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .club-body {
+            padding: 1.3rem 1.5rem 1.3rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .club-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(20, 50, 90, 0.12);
+            border-color: #cbd5e1;
+        }
+
+        .card-header {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #d9e6f2, #c0d4e8);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #1e4a7a;
+            flex-shrink: 0;
+        }
+
+        .club-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #0f2b5c;
+            margin-bottom: 0.2rem;
+        }
+
+        .club-tag {
+            display: inline-block;
+            background: #eef6ff;
+            color: #1e4a7a;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+        }
+
+        .club-desc {
+            color: #475569;
+            font-size: 0.92rem;
+            margin: 0.75rem 0 1.1rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            border-top: 1px solid #edf2f7;
+            padding-top: 1rem;
+        }
+
+        .member-count {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .member-count i {
+            color: #94a3b8;
+        }
+
+        .join-btn {
+            background: #eef6ff;
+            border: none;
+            color: #1e4a7a;
+            font-weight: 600;
+            padding: 0.55rem 1.3rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid transparent;
+        }
+
+        .join-btn i {
+            font-size: 0.8rem;
+        }
+
+        .join-btn:hover {
+            background: #1e4a7a;
+            color: white;
+        }
+
+        .join-btn.joined {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            opacity: 0.95;
+        }
+
+        .join-btn.joined i {
+            color: #059669;
+        }
+
+        /* 已加入按钮悬停 -> 暗示可退出 */
+        .join-btn.joined:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+
+        .join-btn.joined:hover i {
+            color: #dc2626;
+        }
+
+        /* 详情弹窗内的"退出社团"按钮 */
+        .join-btn.leave-btn {
+            background: #ffffff;
+            color: #b91c1c;
+            border: 1.5px solid #fca5a5;
+        }
+
+        .join-btn.leave-btn:hover {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+        }
+
+        .join-btn.leave-btn:hover i {
+            color: #ffffff;
+        }
+
+        /* 创建社团卡 (特殊样式) */
+        .create-card {
+            background: #ffffffd9;
+            border: 2px dashed #b9c9db;
+            box-shadow: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 240px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            color: #4a6b8f;
+        }
+
+        .create-card i {
+            font-size: 2.8rem;
+            color: #1e4a7a;
+            background: #e3edf9;
+            padding: 1rem;
+            border-radius: 50%;
+        }
+
+        .create-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f2b5c;
+        }
+
+        .create-card p {
+            font-size: 0.9rem;
+            color: #5f7d9c;
+        }
+
+        .create-card:hover {
+            background: #e6f0fc;
+            border-color: #1e4a7a;
+        }
+
+        /* 模态框（创建社团） */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 2rem;
+            padding: 2rem 1.8rem;
+            box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.4);
+            transform: scale(0.95);
+            transition: 0.2s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0f2b5c;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal .sub {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #1e293b;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.15s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #1e4a7a;
+            box-shadow: 0 0 0 3px rgba(30, 74, 122, 0.15);
+            background: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 1.8rem -1.8rem 0;
+            padding: 0.9rem 1.8rem 0.2rem;
+            justify-content: flex-end;
+            position: sticky;
+            bottom: -2rem;
+            background: linear-gradient(to top, #ffffff 78%, rgba(255, 255, 255, 0));
+            border-radius: 0 0 2rem 2rem;
+            z-index: 6;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.75rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #1e4a7a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0f2b5c;
+        }
+
+        .btn-secondary {
+            background: #eef2f6;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* 卡片上的"查看详情"入口 */
+        .view-detail {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #1e4a7a;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: -0.3rem 0 0.9rem;
+            width: fit-content;
+        }
+
+        .view-detail i {
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .club-card:hover .view-detail i {
+            transform: translateX(3px);
+        }
+
+        /* 社团详情弹窗 */
+        .modal-lg {
+            max-width: 720px;
+            max-height: 88vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .detail-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            width: 38px;
+            height: 38px;
+            border: none;
+            background: #eef2f6;
+            color: #475569;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-close:hover {
+            background: #e2e8f0;
+            color: #0f2b5c;
+        }
+
+        .detail-header {
+            display: flex;
+            gap: 1.1rem;
+            align-items: center;
+            padding-right: 2.5rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .detail-avatar {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(145deg, #d9e6f2, #c0d4e8);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #1e4a7a;
+            flex-shrink: 0;
+        }
+
+        .detail-header-info h2 {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #0f2b5c;
+            margin-bottom: 0.4rem;
+        }
+
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .detail-meta .member-count {
+            font-size: 0.88rem;
+        }
+
+        .detail-brief {
+            background: #f8fafc;
+            border-left: 3px solid #1e4a7a;
+            color: #475569;
+            padding: 0.8rem 1rem;
+            border-radius: 0 0.8rem 0.8rem 0;
+            font-size: 0.95rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .detail-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-section-title h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f2b5c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-detail-btn {
+            background: #eef6ff;
+            border: 1px solid #cfe2f7;
+            color: #1e4a7a;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-detail-btn:hover {
+            background: #1e4a7a;
+            color: white;
+            border-color: #1e4a7a;
+        }
+
+        .edit-detail-btn.saved {
+            background: #d1fae5;
+            border-color: #a7f3d0;
+            color: #065f46;
+        }
+
+        .detail-body {
+            background: #f8fafc;
+            border: 1px solid #e9eef3;
+            border-radius: 1rem;
+            padding: 1.2rem 1.3rem;
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            word-break: break-word;
+            min-height: 120px;
+        }
+
+        .detail-empty {
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.2rem 0;
+        }
+
+        .detail-empty i {
+            display: block;
+            font-size: 1.6rem;
+            margin-bottom: 0.6rem;
+            color: #cbd5e1;
+        }
+
+        .detail-editor {
+            width: 100%;
+            min-height: 240px;
+            padding: 1rem 1.1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            outline: none;
+            resize: vertical;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+
+        .detail-editor:focus {
+            border-color: #1e4a7a;
+            box-shadow: 0 0 0 3px rgba(30, 74, 122, 0.15);
+            background: white;
+        }
+
+        .detail-edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-top: 0.9rem;
+        }
+
+        .detail-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin: 1.6rem -1.8rem 0;
+            padding: 1rem 1.8rem 1.8rem;
+            border-top: 1px solid #edf2f7;
+            background: #ffffff;
+            position: sticky;
+            bottom: 0;
+            border-radius: 0 0 2rem 2rem;
+            z-index: 5;
+        }
+
+        .detail-footer .join-btn {
+            padding: 0.7rem 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* 详情弹窗顶部大封面 */
+        .modal-lg {
+            padding: 0;
+        }
+
+        .detail-cover {
+            position: relative;
+            height: 190px;
+            background: linear-gradient(135deg, #163a6b 0%, #2f6aa3 100%);
+            border-radius: 2rem 2rem 0 0;
+            overflow: hidden;
+        }
+
+        .detail-cover .cover-fallback {
+            font-size: 3.6rem;
+        }
+
+        .detail-cover .cover-tag {
+            top: 1.1rem;
+            left: 1.3rem;
+        }
+
+        .detail-cover .cover-scrim {
+            background: linear-gradient(180deg, rgba(10, 25, 50, 0.45) 0%, rgba(10, 25, 50, 0) 60%);
+        }
+
+        .detail-content {
+            padding: 0 1.8rem 1.8rem;
+            margin-top: -42px;
+            position: relative;
+        }
+
+        .detail-header {
+            margin-bottom: 1.1rem;
+        }
+
+        .detail-avatar {
+            border: 4px solid white;
+            box-shadow: 0 6px 16px rgba(15, 43, 92, 0.2);
+        }
+
+        .detail-close {
+            background: rgba(0, 0, 0, 0.35);
+            color: white;
+            z-index: 5;
+        }
+
+        .detail-close:hover {
+            background: rgba(0, 0, 0, 0.55);
+            color: white;
+        }
+
+        /* 封面选择器（详情编辑 & 创建表单共用） */
+        .cover-picker {
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.9rem;
+            background: #f8fafc;
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+        }
+
+        .preset-thumb {
+            width: 104px;
+            height: 62px;
+            border-radius: 0.6rem;
+            background-size: cover;
+            background-position: center;
+            background-color: #cbd5e1;
+            border: 2px solid transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            transition: 0.15s;
+        }
+
+        .preset-thumb:hover {
+            transform: translateY(-2px);
+        }
+
+        .preset-thumb.selected {
+            border-color: #1e4a7a;
+            box-shadow: 0 0 0 2px rgba(30, 74, 122, 0.25);
+        }
+
+        .preset-thumb.selected::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            color: white;
+            font-size: 0.7rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .preset-thumb span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+            color: white;
+            font-size: 0.68rem;
+            padding: 0.8rem 0.35rem 0.2rem;
+            font-weight: 600;
+        }
+
+        .cover-input-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.7rem;
+            flex-wrap: wrap;
+        }
+
+        .cover-input-row input[type="text"] {
+            flex: 1;
+            min-width: 160px;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.7rem;
+            font-size: 0.85rem;
+            outline: none;
+            background: white;
+        }
+
+        .cover-input-row input[type="text"]:focus {
+            border-color: #1e4a7a;
+            box-shadow: 0 0 0 3px rgba(30, 74, 122, 0.12);
+        }
+
+        .cover-mini-btn {
+            border: 1px solid #cfe2f7;
+            background: #eef6ff;
+            color: #1e4a7a;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.55rem 1rem;
+            border-radius: 0.7rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cover-mini-btn:hover {
+            background: #1e4a7a;
+            color: white;
+            border-color: #1e4a7a;
+        }
+
+        .cover-hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.45rem;
+        }
+
+        /* 头部"我的资料"入口 */
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .profile-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(6px);
+            color: white;
+            padding: 0.45rem 1rem 0.45rem 0.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .profile-chip:hover {
+            background: rgba(255, 255, 255, 0.26);
+        }
+
+        .profile-chip-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffd966;
+            color: #0f2b5c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-chip-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-chip-avatar.emoji {
+            font-size: 1.4rem;
+            background: #eef6ff;
+        }
+
+        .profile-chip-arrow {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        /* 个人资料弹窗 */
+        .modal-profile {
+            max-width: 600px;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1rem;
+        }
+
+        .form-grid .full-row {
+            grid-column: 1 / -1;
+        }
+
+        .form-error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            border-radius: 0.8rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.1rem;
+            display: none;
+        }
+
+        .form-error-box.active {
+            display: block;
+        }
+
+        .form-error-box ul {
+            margin: 0.2rem 0 0 1.1rem;
+        }
+
+        /* 头像选择 */
+        .avatar-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            align-items: center;
+        }
+
+        .avatar-option {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            background: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-option:hover {
+            border-color: #93b4d6;
+            transform: translateY(-2px);
+        }
+
+        .avatar-option.selected {
+            border-color: #1e4a7a;
+            box-shadow: 0 0 0 3px rgba(30, 74, 122, 0.18);
+        }
+
+        .avatar-upload-btn {
+            height: 46px;
+            padding: 0 1rem;
+            border-radius: 23px;
+            font-size: 0.82rem;
+        }
+
+        /* 爱好多选 */
+        .check-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .check-pill {
+            position: relative;
+        }
+
+        .check-pill input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .check-pill span {
+            display: inline-block;
+            padding: 0.45rem 1.1rem;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.85rem;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.15s;
+            user-select: none;
+        }
+
+        .check-pill input:checked + span {
+            background: #1e4a7a;
+            border-color: #1e4a7a;
+            color: white;
+        }
+
+        /* 资料展示视图 */
+        .profile-view-head {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            background: linear-gradient(135deg, #f2f7fd 0%, #e5eef9 100%);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.3rem;
+            margin-bottom: 1.3rem;
+        }
+
+        .profile-view-avatar {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid white;
+            box-shadow: 0 6px 16px rgba(15, 43, 92, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-view-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-view-head h2 {
+            font-size: 1.4rem;
+            color: #0f2b5c;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-view-head p {
+            color: #5f7d9c;
+            font-size: 0.88rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.9rem 1.2rem;
+            margin-bottom: 1.3rem;
+        }
+
+        .info-item .info-label {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-item .info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .info-item .info-value.empty {
+            color: #b6c2cf;
+            font-weight: 400;
+        }
+
+        .info-item.full-row {
+            grid-column: 1 / -1;
+        }
+
+        .profile-hobbies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .profile-hobbies .hobby-tag {
+            background: #eef6ff;
+            color: #1e4a7a;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+        }
+
+        .profile-clubs {
+            border-top: 1px solid #edf2f7;
+            padding-top: 1.1rem;
+            margin-top: 0.3rem;
+        }
+
+        .profile-clubs h3 {
+            font-size: 1rem;
+            color: #0f2b5c;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-club-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-club-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: #f8fafc;
+            border: 1px solid #e9eef3;
+            border-radius: 0.8rem;
+            padding: 0.55rem 0.9rem;
+            font-size: 0.88rem;
+        }
+
+        .profile-club-item i {
+            color: #1e4a7a;
+        }
+
+        .profile-club-empty {
+            color: #94a3b8;
+            font-size: 0.86rem;
+            background: #f8fafc;
+            border-radius: 0.8rem;
+            padding: 0.8rem 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .hero-actions {
+                align-items: flex-start;
+            }
+            .form-grid, .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 空状态 */
+        .empty-message {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 1.5rem;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .empty-message i {
+            font-size: 2.5rem;
+            color: #b9c9db;
+            margin-bottom: 1rem;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 2rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .hero {
+                padding: 1.8rem 1.5rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                flex: 1 1 auto;
+            }
+            .filter-tabs {
+                justify-content: space-between;
+            }
+            .filter-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            .section-title h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- 防诈骗流动标语 -->
+        <div class="notice-bar" role="status" aria-label="防诈骗提醒">
+            <span class="notice-icon" title="安全提醒"><i class="fas fa-shield-halved"></i></span>
+            <div class="notice-track">
+                <div class="notice-track-inner">
+                    <span class="notice-text">请同学们自己甄别网页上的信息，谨防被骗！<i class="fas fa-circle dot"></i>不向陌生人转账、不透露验证码与密码<i class="fas fa-circle dot"></i></span>
+                    <span class="notice-text" aria-hidden="true">请同学们自己甄别网页上的信息，谨防被骗！<i class="fas fa-circle dot"></i>不向陌生人转账、不透露验证码与密码<i class="fas fa-circle dot"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 头部封面（深色底 + 手机样机） -->
+        <header class="hero">
+            <div class="hero-left">
+                <h1>
+                    <i class="fas fa-users"></i> 社团圈
+                </h1>
+                <p>发现你热爱的，招募你相信的。校园社团，从这里开始。</p>
+                <div class="hero-actions">
+                    <div class="hero-badge">
+                        <i class="fas-regular fa-compass"></i> 已有 20+ 活跃社团
+                    </div>
+                    <button class="profile-chip" id="profileEntryBtn" type="button">
+                        <span class="profile-chip-avatar" id="chipAvatar"><i class="fas fa-user"></i></span>
+                        <span class="profile-chip-text" id="chipText">填写我的资料</span>
+                        <i class="fas fa-chevron-right profile-chip-arrow"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 手机样机：仿 App 封面 -->
+            <div class="hero-phone-wrap" aria-hidden="true">
+                <div class="float-chip one"><i class="fas fa-fire" style="color:#f97316;"></i> 本周 1.2k 人加入社团</div>
+                <div class="float-chip two"><i class="fas fa-comment-dots" style="color:#2563eb;"></i> 社区有 5 条新回复</div>
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="phone-status">
+                            <span>9:41</span>
+                            <span class="ph-icons"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-three-quarters"></i></span>
+                        </div>
+                        <div class="phone-feed">
+                            <div class="feed-card">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Lively%20university%20club%20fair%20at%20dusk%2C%20colorful%20booth%20tents%2C%20crowds%20of%20excited%20students%2C%20warm%20string%20lights%2C%20energetic%20youthful%20atmosphere%2C%20realistic%20photography%2C%20no%20text%2C%20no%20watermark&image_size=landscape_16_9" alt="">
+                                <div class="feed-scrim"></div>
+                                <span class="feed-dot"></span>
+                                <div class="feed-caption">
+                                    <span class="feed-tag">招新现场</span>
+                                    <p>「百团大战」遇见最好的社团！</p>
+                                </div>
+                                <span class="feed-duration"><i class="fas fa-play"></i> 02:47</span>
+                            </div>
+                            <div class="feed-actions">
+                                <span><i class="fas fa-heart"></i> 2.1k</span>
+                                <span><i class="fas fa-comment"></i> 326</span>
+                                <span><i class="fas fa-share"></i> 98</span>
+                                <span><i class="fas fa-bookmark"></i> 收藏</span>
+                            </div>
+                        </div>
+                        <nav class="phone-tabbar">
+                            <div class="ph-tab"><i class="fas fa-compass"></i><span>社团</span></div>
+                            <div class="ph-tab"><i class="far fa-comment-dots"></i><span>消息</span><span class="ph-reddot"></span></div>
+                            <div class="ph-tab active"><span class="ph-center"><i class="fas fa-comment"></i><em>5</em></span><span>社区</span></div>
+                            <div class="ph-tab"><i class="fas fa-circle-play"></i><span>现场</span></div>
+                            <div class="ph-tab"><i class="far fa-face-smile"></i><span>我的</span></div>
+                        </nav>
+                        <div class="phone-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-watermark">CLUB <em>/</em> 社团圈</div>
+        </header>
+
+        <!-- 搜索和分类 -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索社团名称、关键词...">
+                <button id="searchBtn"><i class="fas fa-arrow-right"></i> 搜索</button>
+            </div>
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-btn active" data-category="all"><i class="fas fa-layer-group"></i> 全部</button>
+                <button class="filter-btn" data-category="学术"><i class="fas fa-graduation-cap"></i> 学术</button>
+                <button class="filter-btn" data-category="艺术"><i class="fas fa-palette"></i> 艺术</button>
+                <button class="filter-btn" data-category="运动"><i class="fas fa-futbol"></i> 运动</button>
+                <button class="filter-btn" data-category="科技"><i class="fas fa-microchip"></i> 科技</button>
+            </div>
+        </div>
+
+        <!-- 发现社团 标题 -->
+        <div class="section-title">
+            <h2><i class="fas fa-compass" style="color: #1e4a7a;"></i> 发现社团</h2>
+            <span id="clubCount">6 个社团</span>
+        </div>
+
+        <!-- 社团卡片网格 -->
+        <div class="clubs-grid" id="clubsGrid">
+            <!-- 动态由JS渲染，但会留一个创建卡片占位，保证布局 -->
+        </div>
+
+        <!-- 创建社团 标题 -->
+        <div class="section-title" style="margin-top: 3rem;">
+            <h2><i class="fas fa-plus-circle" style="color: #1e4a7a;"></i> 招募新成员</h2>
+            <span>创建你的社团</span>
+        </div>
+
+        <!-- 创建社团卡片区域 (单独展示) -->
+        <div class="clubs-grid" id="createSectionGrid">
+            <div class="create-card" id="createClubCard">
+                <i class="fas fa-plus"></i>
+                <h3>创建新社团</h3>
+                <p>把你有趣的想法变成现实，招募志同道合的伙伴</p>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <i class="fas fa-heart" style="color: #f97373;"></i> 社团圈 · 让大学生活更精彩
+        </div>
+    </div>
+
+    <!-- 创建社团模态框 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2><i class="fas fa-rocket" style="color: #1e4a7a;"></i> 创建社团</h2>
+            <p class="sub">填写社团信息，开始招募成员</p>
+            <form id="createClubForm">
+                <div class="form-group">
+                    <label>社团名称 *</label>
+                    <input type="text" id="clubName" required placeholder="例如：星空天文社">
+                </div>
+                <div class="form-group">
+                    <label>分类 *</label>
+                    <select id="clubCategory" required>
+                        <option value="学术">学术</option>
+                        <option value="艺术">艺术</option>
+                        <option value="运动">运动</option>
+                        <option value="科技">科技</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>简短描述 *</label>
+                    <textarea id="clubDescription" rows="3" required placeholder="介绍一下社团的宗旨、活动内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>详细介绍（选填，创建后也可以随时补充编辑）</label>
+                    <textarea id="clubDetail" rows="5" placeholder="可以分段填写：社团宗旨、常规活动、招新要求、活动时间、联系方式等..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>封面背景图（可选）</label>
+                    <div class="cover-picker" id="createCoverPicker"></div>
+                </div>
+                <div class="form-group">
+                    <label>图标 (可选)</label>
+                    <select id="clubIcon">
+                        <option value="fa-star">⭐ 星星</option>
+                        <option value="fa-music">🎵 音乐</option>
+                        <option value="fa-code">💻 代码</option>
+                        <option value="fa-camera">📷 摄影</option>
+                        <option value="fa-heart">❤️ 爱心</option>
+                        <option value="fa-basketball">🏀 篮球</option>
+                        <option value="fa-palette">🎨 艺术</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">创建并招募</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 社团详情弹窗 -->
+    <div class="modal-overlay" id="detailOverlay">
+        <div class="modal modal-lg">
+            <button class="detail-close" id="detailCloseBtn" title="关闭">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="detail-cover" id="detailCover"></div>
+            <div class="detail-content">
+                <div class="detail-header">
+                    <div class="detail-avatar" id="detailAvatar">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="detail-header-info">
+                        <h2 id="detailName">社团名称</h2>
+                        <div class="detail-meta">
+                            <span class="member-count">
+                                <i class="fas fa-user-group"></i>
+                                <span id="detailMembers">0</span> 人
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="detail-brief" id="detailBrief"></p>
+
+                <div class="detail-section-title">
+                    <h3><i class="fas fa-align-left" style="color:#1e4a7a;"></i> 社团详细介绍</h3>
+                    <button class="edit-detail-btn" id="editDetailBtn">
+                        <i class="fas fa-pen"></i> 编辑介绍
+                    </button>
+                </div>
+
+                <!-- 展示态 -->
+                <div class="detail-body" id="detailBody"></div>
+
+                <!-- 编辑态 -->
+                <div id="detailEditArea" hidden>
+                    <div class="form-group">
+                        <label>封面背景图</label>
+                        <div class="cover-picker" id="detailCoverPicker"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>详细介绍内容</label>
+                        <textarea class="detail-editor" id="detailEditor" placeholder="在这里填写社团详细介绍，可以分段写：&#10;【社团宗旨】...&#10;【常规活动】...&#10;【招新要求】...&#10;【活动时间】...&#10;【联系方式】..."></textarea>
+                    </div>
+                    <div class="detail-edit-actions">
+                        <button class="btn btn-secondary" id="cancelEditBtn">取消</button>
+                        <button class="btn btn-primary" id="saveDetailBtn">保存介绍</button>
+                    </div>
+                </div>
+
+                <div class="detail-footer">
+                    <button class="join-btn" id="detailJoinBtn">
+                        <i class="fas fa-plus-circle"></i> 加入社团
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人资料弹窗 -->
+    <div class="modal-overlay" id="profileOverlay">
+        <div class="modal modal-profile">
+            <button class="detail-close" id="profileCloseBtn" title="关闭">
+                <i class="fas fa-xmark"></i>
+            </button>
+
+            <!-- 表单视图 -->
+            <div id="profileFormView">
+                <h2><i class="fas fa-id-card" style="color: #1e4a7a;"></i> 我的资料</h2>
+                <p class="sub">填写你的个人信息，方便认识同社团的小伙伴</p>
+
+                <div class="form-error-box" id="profileErrorBox">
+                    <i class="fas fa-circle-exclamation"></i> 请检查以下内容：
+                    <ul id="profileErrorList"></ul>
+                </div>
+
+                <form id="profileForm" novalidate>
+                    <div class="form-group">
+                        <label>头像</label>
+                        <div class="avatar-options" id="avatarOptions"></div>
+                        <input type="file" id="avatarFile" accept="image/*" hidden>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>姓名 / 昵称 *</label>
+                            <input type="text" id="pfName" placeholder="例如：陈小满" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label>学号</label>
+                            <input type="text" id="pfStudentId" placeholder="例如：2024110001" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <select id="pfGender">
+                                <option value="">请选择</option>
+                                <option value="女">女</option>
+                                <option value="男">男</option>
+                                <option value="保密">保密</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>入学年份</label>
+                            <select id="pfGrade">
+                                <option value="">请选择</option>
+                                <option value="2022级">2022级</option>
+                                <option value="2023级">2023级</option>
+                                <option value="2024级">2024级</option>
+                                <option value="2025级">2025级</option>
+                                <option value="2026级">2026级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>学院</label>
+                            <input type="text" id="pfCollege" placeholder="例如：信息工程学院" maxlength="30">
+                        </div>
+                        <div class="form-group">
+                            <label>专业</label>
+                            <input type="text" id="pfMajor" placeholder="例如：计算机科学与技术" maxlength="30">
+                        </div>
+                        <div class="form-group">
+                            <label>生日</label>
+                            <input type="date" id="pfBirthday" min="1990-01-01" max="2012-12-31">
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱</label>
+                            <input type="email" id="pfEmail" placeholder="name@example.com" maxlength="50">
+                        </div>
+                        <div class="form-group full-row">
+                            <label>手机号</label>
+                            <input type="tel" id="pfPhone" placeholder="11位手机号（选填）" maxlength="11">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>兴趣爱好（可多选）</label>
+                        <div class="check-options" id="hobbyOptions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>个人简介</label>
+                        <textarea id="pfBio" rows="3" placeholder="一句话介绍一下自己吧..." maxlength="200"></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="profileCancelBtn">取消</button>
+                        <button type="submit" class="btn btn-primary">保存资料</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 展示视图 -->
+            <div id="profileDisplayView" hidden>
+                <div class="profile-view-head">
+                    <div class="profile-view-avatar" id="displayAvatar"></div>
+                    <div>
+                        <h2 id="displayName">同学</h2>
+                        <p id="displaySub">未填写院系信息</p>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-id-badge"></i> 学号</div>
+                        <div class="info-value" id="displayStudentId"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-venus-mars"></i> 性别</div>
+                        <div class="info-value" id="displayGender"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-graduation-cap"></i> 入学年份</div>
+                        <div class="info-value" id="displayGrade"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-cake-candles"></i> 生日</div>
+                        <div class="info-value" id="displayBirthday"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-envelope"></i> 邮箱</div>
+                        <div class="info-value" id="displayEmail"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-phone"></i> 手机号</div>
+                        <div class="info-value" id="displayPhone"></div>
+                    </div>
+                    <div class="info-item full-row">
+                        <div class="info-label"><i class="fas fa-heart"></i> 兴趣爱好</div>
+                        <div class="info-value"><div class="profile-hobbies" id="displayHobbies"></div></div>
+                    </div>
+                    <div class="info-item full-row">
+                        <div class="info-label"><i class="fas fa-pen-line"></i> 个人简介</div>
+                        <div class="info-value" id="displayBio"></div>
+                    </div>
+                </div>
+
+                <div class="profile-clubs">
+                    <h3><i class="fas fa-users" style="color:#1e4a7a;"></i> 我加入的社团</h3>
+                    <div id="displayJoinedClubs"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="profileCloseBtn2">关闭</button>
+                    <button type="button" class="btn btn-primary" id="profileEditBtn">
+                        <i class="fas fa-pen"></i> 修改资料
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- 初始数据 ----------
+            const initialClubs = [
+                {
+                    id: 'c1',
+                    name: '星空天文社',
+                    category: '学术',
+                    description: '每周观测星空，学习天文知识，一起探索宇宙的奥秘。',
+                    members: 42,
+                    icon: 'fa-star',
+                    joined: false,
+                    detail: '【社团宗旨】\n面向所有对星空感到好奇的同学，无论零基础还是有经验的爱好者，都能在这里找到属于自己的那片星空。\n\n【常规活动】\n· 每周五晚校园观星会：望远镜实操、四季星座辨认\n· 每月一次天文主题分享会：宇宙学、航天探测、流星雨观测等\n· 学期末郊外观星露营，整夜守候银河与日出\n\n【招新要求】\n只要对星空有热情即可，无需任何基础；望远镜等器材由社团统一提供。\n\n【活动时间】每周五 19:30 · 物理楼楼顶平台\n【联系方式】QQ群：123456789（公众号：星空天文社）'
+                },
+                {
+                    id: 'c2',
+                    name: '弦音吉他社',
+                    category: '艺术',
+                    description: '零基础教学，草地音乐节，用琴弦震动青春。',
+                    members: 68,
+                    icon: 'fa-music',
+                    joined: false,
+                    detail: '【社团宗旨】\n让每一把吉他都不再吃灰，让每一份热爱都有回响。\n\n【常规活动】\n· 每周二、四晚零基础吉他教学：持琴姿势、和弦转换、流行弹唱\n· 每月一次"草地音乐夜"露天路演，欢迎带朋友来听\n· 年末专场音乐会，优秀社员可登台演出\n\n【招新要求】\n不限基础，零基础友好；可自带吉他，也可借用社团公用琴。\n\n【活动时间】每周二、四 19:00 · 大学生活动中心 302\n【联系方式】微信：xianyin2026'
+                },
+                {
+                    id: 'c3',
+                    name: 'Byte 编程俱乐部',
+                    category: '科技',
+                    description: '一起写代码、做项目、参加黑客松，技术改变世界。',
+                    members: 93,
+                    icon: 'fa-code',
+                    joined: false,
+                    detail: '【社团宗旨】\n用代码创造有趣的东西，在真实项目里快速成长。\n\n【常规活动】\n· 每周技术分享：前端、后端、算法、AI 应用等方向轮换\n· 组队开发实战项目，优秀作品帮助部署上线\n· 组织参加校级黑客松及全国大学生程序设计竞赛，往届多人获奖\n\n【招新要求】\n· 对编程有兴趣，专业不限，欢迎文科同学跨专业加入\n· 活动以动手实践为主，请携带自己的电脑\n\n【活动时间】每周三 18:30 · 计算机学院实验室 B201\n【联系方式】QQ群：987654321'
+                },
+                {
+                    id: 'c4',
+                    name: '追光摄影协会',
+                    category: '艺术',
+                    description: '人像、风光、街拍，用镜头记录校园与城市。',
+                    members: 57,
+                    icon: 'fa-camera',
+                    joined: false,
+                    detail: '【社团宗旨】\n用镜头记录生活，让光影替你说话。\n\n【常规活动】\n· 每两周一次主题外拍：人像、风光、街拍、夜景轮换进行\n· 后期修图 Workshop：Lightroom 调色与手机修图技巧\n· 学期末举办校园摄影展，优秀作品统一打印展出\n\n【招新要求】\n手机、相机均可参加；社团提供部分单反及镜头供社员借用。\n\n【活动时间】隔周周六 14:00 · 艺术楼门口集合\n【联系方式】小红书：@追光摄影'
+                },
+                {
+                    id: 'c5',
+                    name: '晨跑&篮球联盟',
+                    category: '运动',
+                    description: '晨跑打卡、篮球友谊赛，一起挥洒汗水。',
+                    members: 84,
+                    icon: 'fa-basketball',
+                    joined: false,
+                    detail: '【社团宗旨】\n用运动开启每一天，在汗水里交到真朋友。\n\n【常规活动】\n· 每周一至周五 6:40 操场晨跑打卡，全勤可获学期运动奖品\n· 每周六下午篮球 3v3 / 5v5 友谊赛，按水平分队\n· 每学期举办一次院系篮球联赛，欢迎组队报名\n\n【招新要求】\n身体健康、热爱运动即可，运动强度自选，不勉强、不内卷。\n\n【集合地点】学校东操场 / 体育馆篮球场\n【联系方式】微信群请添加社长微信：runhoops'
+                },
+                {
+                    id: 'c6',
+                    name: '益行志愿者协会',
+                    category: '其他',
+                    description: '社区服务、支教、环保，用行动温暖世界。',
+                    members: 112,
+                    icon: 'fa-heart',
+                    joined: false,
+                    detail: '【社团宗旨】\n点滴行动，温暖他人，也成就自己。\n\n【常规活动】\n· 周末社区敬老陪伴与小学生课业辅导\n· 寒暑假乡村支教项目，可开具社会实践证明\n· 校园环保日、旧衣募捐、公益跑等品牌活动\n\n【招新要求】\n有责任心、有耐心，能保证每月至少参加一次志愿活动。\n\n【福利说明】志愿服务时长可计入第二课堂学分\n【报名咨询】QQ群：202619999'
+                }
+            ];
+
+            // ---------- 封面背景图 ----------
+            function coverUrl(prompt) {
+                return 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt='
+                    + encodeURIComponent(prompt) + '&image_size=landscape_16_9';
+            }
+
+            // 可选预设封面
+            const COVER_PRESETS = [
+                { name: '星空宇宙', url: coverUrl('Starry night sky, milky way galaxy over dark mountains, shooting stars, deep blue cosmos, dreamy astrophotography, no text, no watermark') },
+                { name: '草地音乐', url: coverUrl('Acoustic guitar on green grass at sunset campus music festival, warm golden light, bokeh lights, youthful atmosphere, no text, no watermark') },
+                { name: '编程科技', url: coverUrl('Modern programming workspace, glowing source code on monitor, dark blue and purple ambient light, laptop close up, tech atmosphere, no text, no watermark') },
+                { name: '摄影相机', url: coverUrl('Vintage film camera on wooden table with printed photos, soft window light, creative photographer workspace, warm tones, no text, no watermark') },
+                { name: '篮球晨光', url: coverUrl('Outdoor basketball court at dawn, orange basketball, morning sunlight and long shadows, energetic sports scene, no text, no watermark') },
+                { name: '公益志愿', url: coverUrl('Young volunteers stacking hands together outdoors in warm sunlight, community service, kindness and hope, heartwarming scene, no text, no watermark') },
+                { name: '舞蹈舞台', url: coverUrl('Dancer silhouette on stage with colorful neon spotlights and smoke, dynamic performing arts, vibrant atmosphere, no text, no watermark') },
+                { name: '书阁阅读', url: coverUrl('Cozy library with shelves of books, warm reading lamp, open book on desk, quiet study atmosphere, soft golden light, no text, no watermark') }
+            ];
+
+            // 六个初始社团默认对应前六张预设封面
+            const DEFAULT_COVERS = {
+                c1: COVER_PRESETS[0].url,
+                c2: COVER_PRESETS[1].url,
+                c3: COVER_PRESETS[2].url,
+                c4: COVER_PRESETS[3].url,
+                c5: COVER_PRESETS[4].url,
+                c6: COVER_PRESETS[5].url
+            };
+
+            // 本地图片 -> 压缩后的 dataURL（控制在 localStorage 容量内）
+            function fileToCoverDataUrl(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const maxW = 960;
+                            let w = img.width, h = img.height;
+                            if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w;
+                            canvas.height = h;
+                            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                            resolve(canvas.toDataURL('image/jpeg', 0.72));
+                        };
+                        img.onerror = reject;
+                        img.src = reader.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ---------- 本地持久化 ----------
+            const STORAGE_KEY = 'clubCircleClubs_v1';
+
+            function withCoverDefaults(c) {
+                return {
+                    detail: '',
+                    cover: DEFAULT_COVERS[c.id] || '',
+                    ...c
+                };
+            }
+
+            function loadClubs() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                    if (Array.isArray(saved) && saved.length) {
+                        // 补全可能缺失的字段，兼容旧数据（自动补上默认封面）
+                        return saved.map(withCoverDefaults);
+                    }
+                } catch (e) { /* 数据损坏时回退到初始数据 */ }
+                return initialClubs.map(withCoverDefaults);
+            }
+
+            // 返回是否保存成功（上传大图时可能超出本地存储配额）
+            function saveClubs() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(clubs));
+                    return true;
+                } catch (e) { return false; }
+            }
+
+            // 当前状态
+            let clubs = loadClubs();
+            let activeCategory = 'all';
+            let searchQuery = '';
+
+            // DOM 元素
+            const clubsGrid = document.getElementById('clubsGrid');
+            const clubCountSpan = document.getElementById('clubCount');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const filterTabs = document.getElementById('filterTabs');
+            const createClubCard = document.getElementById('createClubCard');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const createClubForm = document.getElementById('createClubForm');
+
+            // 详情弹窗元素
+            const detailOverlay = document.getElementById('detailOverlay');
+            const detailCloseBtn = document.getElementById('detailCloseBtn');
+            const detailCover = document.getElementById('detailCover');
+            const detailAvatar = document.getElementById('detailAvatar');
+            const detailName = document.getElementById('detailName');
+            const detailMembers = document.getElementById('detailMembers');
+            const detailBrief = document.getElementById('detailBrief');
+            const detailBody = document.getElementById('detailBody');
+            const editDetailBtn = document.getElementById('editDetailBtn');
+            const detailEditArea = document.getElementById('detailEditArea');
+            const detailEditor = document.getElementById('detailEditor');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const saveDetailBtn = document.getElementById('saveDetailBtn');
+            const detailJoinBtn = document.getElementById('detailJoinBtn');
+
+            // 当前打开详情的社团 id；编辑中的临时封面
+            let currentDetailId = null;
+            let tempDetailCover = '';
+
+            // ---------- 工具函数 ----------
+            // 获取图标 class (full)
+            function getIconClass(iconName) {
+                // 如果iconName 包含了 'fa-' 就直接使用，否则默认
+                if (iconName && iconName.startsWith('fa-')) {
+                    return `fas ${iconName}`;
+                }
+                return 'fas fa-users'; // fallback
+            }
+
+            // 过滤并排序俱乐部
+            function getFilteredClubs() {
+                let filtered = clubs.filter(club => {
+                    // 分类筛选
+                    if (activeCategory !== 'all') {
+                        // 特殊处理：运动、科技等已经在数据里按字符串匹配
+                        if (activeCategory === '运动' && club.category !== '运动') return false;
+                        if (activeCategory === '科技' && club.category !== '科技') return false;
+                        if (activeCategory === '艺术' && club.category !== '艺术') return false;
+                        if (activeCategory === '学术' && club.category !== '学术') return false;
+                        // 对于“其他”分类，不属于以上学术/艺术/运动/科技
+                        if (activeCategory === '其他') {
+                            const known = ['学术', '艺术', '运动', '科技'];
+                            if (known.includes(club.category)) return false;
+                        }
+                    }
+                    // 搜索
+                    if (searchQuery.trim() !== '') {
+                        const query = searchQuery.trim().toLowerCase();
+                        return club.name.toLowerCase().includes(query) || 
+                               club.description.toLowerCase().includes(query) ||
+                               club.category.toLowerCase().includes(query);
+                    }
+                    return true;
+                });
+                return filtered;
+            }
+
+            // 更新俱乐部计数
+            function updateClubCount(count) {
+                clubCountSpan.textContent = `${count} 个社团`;
+            }
+
+            // 渲染社团卡片
+            function renderClubs() {
+                const filtered = getFilteredClubs();
+                updateClubCount(filtered.length);
+
+                if (filtered.length === 0) {
+                    clubsGrid.innerHTML = `
+                        <div class="empty-message">
+                            <i class="fas fa-search"></i>
+                            <h3>没有找到匹配的社团</h3>
+                            <p>试试其他关键词或分类，或者创建一个新社团吧！</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach(club => {
+                    const iconClass = getIconClass(club.icon);
+                    const joinedClass = club.joined ? 'joined' : '';
+                    const joinedText = club.joined ? '已加入' : '加入社团';
+                    const joinedIcon = club.joined ? 'fa-check-circle' : 'fa-plus-circle';
+
+                    html += `
+                        <div class="club-card" data-id="${club.id}">
+                            <div class="club-cover">
+                                ${coverHtml(club)}
+                            </div>
+                            <div class="club-body">
+                                <div class="card-header">
+                                    <div class="avatar">
+                                        <i class="${iconClass}"></i>
+                                    </div>
+                                    <div class="club-info">
+                                        <h3>${escapeHtml(club.name)}</h3>
+                                    </div>
+                                </div>
+                                <p class="club-desc">${escapeHtml(club.description)}</p>
+                                <span class="view-detail">查看详情 <i class="fas fa-chevron-right"></i></span>
+                                <div class="card-footer">
+                                    <div class="member-count">
+                                        <i class="fas fa-user-group"></i> ${club.members} 人
+                                    </div>
+                                    <button class="join-btn ${joinedClass}" data-id="${club.id}" title="${club.joined ? '点击退出该社团' : ''}">
+                                        <i class="fas ${joinedIcon}"></i> ${joinedText}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                clubsGrid.innerHTML = html;
+
+                // 重新绑定卡片上的加入/退出按钮事件（仅卡片区域，不含详情弹窗按钮）
+                clubsGrid.querySelectorAll('.join-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.dataset.id;
+                        const club = clubs.find(c => c.id === id);
+                        if (club && club.joined) {
+                            leaveClub(id);
+                        } else {
+                            joinClub(id);
+                        }
+                    });
+                });
+
+                // 点击卡片其他区域 -> 打开社团详情
+                document.querySelectorAll('.club-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        openClubDetail(this.dataset.id);
+                    });
+                });
+            }
+
+            // 简单的防XSS
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // 属性内文本转义（用于 img src 等）
+            function escapeAttr(text) {
+                return escapeHtml(text).replace(/"/g, '&quot;');
+            }
+
+            // 封面内部结构：底层兜底图标 + 图片(加载失败自动移除) + 渐变层 + 分类标签
+            function coverHtml(club) {
+                const iconClass = getIconClass(club.icon);
+                return `
+                    <i class="cover-fallback ${iconClass}"></i>
+                    ${club.cover ? `<img class="cover-img" src="${escapeAttr(club.cover)}" alt="" onerror="this.remove()">` : ''}
+                    <div class="cover-scrim"></div>
+                    <span class="club-tag cover-tag">${escapeHtml(club.category)}</span>
+                `;
+            }
+
+            // 加入社团逻辑
+            function joinClub(clubId) {
+                const club = clubs.find(c => c.id === clubId);
+                if (club && !club.joined) {
+                    club.joined = true;
+                    club.members += 1;  // 增加成员数
+                    saveClubs();
+                    renderClubs();
+                    // 如果详情弹窗正打开着，同步按钮和人数
+                    if (currentDetailId === clubId) {
+                        renderClubDetail(club);
+                    }
+                }
+            }
+
+            // 退出社团逻辑（二次确认，防止误点）
+            function leaveClub(clubId) {
+                const club = clubs.find(c => c.id === clubId);
+                if (!club || !club.joined) return;
+                if (!confirm('确定要退出「' + club.name + '」吗？')) return;
+                club.joined = false;
+                club.members = Math.max(0, club.members - 1);  // 成员数减 1，不为负
+                saveClubs();
+                renderClubs();
+                // 如果详情弹窗正打开着，同步按钮和人数
+                if (currentDetailId === clubId) {
+                    renderClubDetail(club);
+                }
+            }
+
+            // ---------- 社团详情：查看 / 编辑详细介绍 ----------
+
+            function openClubDetail(clubId) {
+                const club = clubs.find(c => c.id === clubId);
+                if (!club) return;
+                currentDetailId = clubId;
+                renderClubDetail(club);
+                exitEditMode();
+                detailOverlay.classList.add('active');
+                const dm = detailOverlay.querySelector('.modal');
+                if (dm) dm.scrollTop = 0;
+            }
+
+            function closeClubDetail() {
+                detailOverlay.classList.remove('active');
+                currentDetailId = null;
+            }
+
+            // 渲染详情内容（每次数据变化后可重复调用）
+            function renderClubDetail(club) {
+                detailCover.innerHTML = coverHtml(club);
+                detailAvatar.querySelector('i').className = getIconClass(club.icon);
+                detailName.textContent = club.name;
+                detailMembers.textContent = club.members;
+                detailBrief.textContent = club.description;
+
+                // 详细介绍：用 textContent 填充，CSS 的 white-space:pre-wrap 保留换行
+                if (club.detail && club.detail.trim() !== '') {
+                    detailBody.textContent = club.detail;
+                } else {
+                    detailBody.innerHTML =
+                        '<div class="detail-empty"><i class="fas fa-file-lines"></i>'
+                        + '还没有填写详细介绍<br>点击右上角"编辑介绍"来补充内容吧</div>';
+                }
+
+                // 底部按钮：未加入 -> 加入社团；已加入 -> 退出社团
+                if (club.joined) {
+                    detailJoinBtn.className = 'join-btn leave-btn';
+                    detailJoinBtn.disabled = false;
+                    detailJoinBtn.innerHTML = '<i class="fas fa-right-from-bracket"></i> 退出社团';
+                } else {
+                    detailJoinBtn.className = 'join-btn';
+                    detailJoinBtn.disabled = false;
+                    detailJoinBtn.innerHTML = '<i class="fas fa-plus-circle"></i> 加入社团';
+                }
+
+                // 重置编辑按钮（防止"已保存"状态残留）
+                editDetailBtn.classList.remove('saved');
+                editDetailBtn.innerHTML = '<i class="fas fa-pen"></i> 编辑介绍';
+            }
+
+            function enterEditMode() {
+                const club = clubs.find(c => c.id === currentDetailId);
+                if (!club) return;
+                detailEditor.value = club.detail || '';
+                tempDetailCover = club.cover || '';
+                detailCoverPicker.reset(tempDetailCover);
+                detailBody.hidden = true;
+                detailEditArea.hidden = false;
+                editDetailBtn.style.display = 'none';
+                setTimeout(() => detailEditor.focus(), 0);
+            }
+
+            function exitEditMode() {
+                detailEditArea.hidden = true;
+                detailBody.hidden = false;
+                editDetailBtn.style.display = '';
+            }
+
+            // 编辑态下封面选择变化：实时预览（未点保存前不写数据）
+            function onDetailCoverChange(url) {
+                tempDetailCover = url;
+                const club = clubs.find(c => c.id === currentDetailId);
+                if (club) {
+                    detailCover.innerHTML = coverHtml({ ...club, cover: url });
+                    // 封面更新后弹窗回到顶部，让用户看到预览
+                    document.querySelector('#detailOverlay .modal-lg').scrollTop = 0;
+                }
+            }
+
+            function saveClubDetail() {
+                const club = clubs.find(c => c.id === currentDetailId);
+                if (!club) return;
+                club.detail = detailEditor.value.trim();
+                club.cover = tempDetailCover;
+                if (!saveClubs()) {
+                    alert('保存失败：浏览器本地存储空间不足。\n建议改用"图片链接"方式设置封面，或上传更小的图片。');
+                    return;
+                }
+                renderClubs();
+                renderClubDetail(club);
+                exitEditMode();
+
+                // 轻量保存反馈
+                editDetailBtn.classList.add('saved');
+                editDetailBtn.innerHTML = '<i class="fas fa-check"></i> 已保存';
+                setTimeout(() => {
+                    editDetailBtn.classList.remove('saved');
+                    editDetailBtn.innerHTML = '<i class="fas fa-pen"></i> 编辑介绍';
+                }, 1800);
+            }
+
+            // ---------- 封面选择器（预设图 / 图片链接 / 本地上传） ----------
+            function buildCoverPicker(containerEl, onChange) {
+                let current = '';
+
+                const row = document.createElement('div');
+                row.className = 'preset-row';
+                const thumbs = COVER_PRESETS.map(p => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'preset-thumb';
+                    b.style.backgroundImage = `url("${p.url}")`;
+                    b.title = p.name;
+                    b.innerHTML = `<span>${escapeHtml(p.name)}</span>`;
+                    b.addEventListener('click', () => setUrl(p.url));
+                    row.appendChild(b);
+                    return { el: b, url: p.url };
+                });
+
+                const urlInput = document.createElement('input');
+                urlInput.type = 'text';
+                urlInput.placeholder = '或粘贴图片链接 (https://...)';
+
+                const applyBtn = document.createElement('button');
+                applyBtn.type = 'button';
+                applyBtn.className = 'cover-mini-btn';
+                applyBtn.innerHTML = '<i class="fas fa-link"></i> 应用链接';
+
+                const uploadBtn = document.createElement('button');
+                uploadBtn.type = 'button';
+                uploadBtn.className = 'cover-mini-btn';
+                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> 上传本地图片';
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.hidden = true;
+
+                const inputRow = document.createElement('div');
+                inputRow.className = 'cover-input-row';
+                inputRow.append(urlInput, applyBtn, uploadBtn, fileInput);
+
+                const hint = document.createElement('div');
+                hint.className = 'cover-hint';
+                hint.textContent = '可选用预设封面、粘贴图片链接，或上传本地图片（将自动压缩保存在本机浏览器）';
+
+                containerEl.append(row, inputRow, hint);
+
+                function sync() {
+                    thumbs.forEach(t => t.el.classList.toggle('selected', t.url === current));
+                }
+
+                function setUrl(u) {
+                    current = u || '';
+                    sync();
+                    onChange(current);
+                }
+
+                applyBtn.addEventListener('click', () => {
+                    const u = urlInput.value.trim();
+                    if (u) setUrl(u);
+                });
+                urlInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyBtn.click();
+                    }
+                });
+                uploadBtn.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', async () => {
+                    const file = fileInput.files && fileInput.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        alert('请选择图片文件');
+                        return;
+                    }
+                    const oldHtml = uploadBtn.innerHTML;
+                    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 压缩中...';
+                    uploadBtn.disabled = true;
+                    try {
+                        const dataUrl = await fileToCoverDataUrl(file);
+                        urlInput.value = '';
+                        setUrl(dataUrl);
+                    } catch (err) {
+                        alert('图片读取失败，请换一张图片试试');
+                    } finally {
+                        uploadBtn.innerHTML = oldHtml;
+                        uploadBtn.disabled = false;
+                        fileInput.value = '';
+                    }
+                });
+
+                return {
+                    reset(url) {
+                        current = url || '';
+                        urlInput.value = '';
+                        sync();
+                    },
+                    get value() { return current; }
+                };
+            }
+
+            // ---------- 学生个人资料 ----------
+            const PROFILE_KEY = 'clubCircleProfile_v1';
+            const PRESET_AVATARS = ['😀', '😎', '🥳', '🤓', '😺', '🦊', '🐼', '🦁', '🐧', '🌟'];
+            const HOBBY_CHOICES = ['音乐', '运动', '阅读', '摄影', '旅行', '编程', '美食', '绘画', '动漫', '志愿公益'];
+
+            function emptyProfile() {
+                return {
+                    avatar: '😀', name: '', studentId: '', gender: '', grade: '',
+                    college: '', major: '', birthday: '', email: '', phone: '',
+                    hobbies: [], bio: ''
+                };
+            }
+
+            let profile = (function loadProfile() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(PROFILE_KEY));
+                    if (saved && typeof saved === 'object') {
+                        return { ...emptyProfile(), ...saved, hobbies: Array.isArray(saved.hobbies) ? saved.hobbies : [] };
+                    }
+                } catch (e) { /* 损坏时重置 */ }
+                return null;  // null 表示从未填写
+            })();
+
+            let tempAvatar = '😀';
+
+            // 头像统一渲染：dataURL 图片 / emoji
+            function renderAvatarInto(el, avatar, big) {
+                if (avatar && avatar.startsWith('data:image')) {
+                    el.className = el.className.split(' ').filter(c => c !== 'emoji').join(' ');
+                    el.innerHTML = `<img src="${escapeAttr(avatar)}" alt="头像">`;
+                } else {
+                    el.classList.add('emoji');
+                    el.textContent = avatar || '😀';
+                }
+            }
+
+            // 头像本地图片 -> 小尺寸压缩 dataURL
+            function fileToAvatarDataUrl(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const size = 200;
+                            const canvas = document.createElement('canvas');
+                            canvas.width = size;
+                            canvas.height = size;
+                            const ctx = canvas.getContext('2d');
+                            // 居中正方形裁切
+                            const side = Math.min(img.width, img.height);
+                            ctx.drawImage(img,
+                                (img.width - side) / 2, (img.height - side) / 2, side, side,
+                                0, 0, size, size);
+                            resolve(canvas.toDataURL('image/jpeg', 0.8));
+                        };
+                        img.onerror = reject;
+                        img.src = reader.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 头像选项 DOM
+            const avatarOptionsEl = document.getElementById('avatarOptions');
+            const avatarFileEl = document.getElementById('avatarFile');
+
+            function buildAvatarOptions(selected) {
+                avatarOptionsEl.innerHTML = '';
+                let hasSelectedPreset = false;
+                PRESET_AVATARS.forEach(emo => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'avatar-option';
+                    b.textContent = emo;
+                    if (emo === selected) {
+                        b.classList.add('selected');
+                        hasSelectedPreset = true;
+                    }
+                    b.addEventListener('click', () => selectAvatar(emo, b));
+                    avatarOptionsEl.appendChild(b);
+                });
+
+                // 自定义上传头像（若当前头像是 dataURL 也显示选中态）
+                const up = document.createElement('button');
+                up.type = 'button';
+                up.className = 'avatar-option';
+                up.style.fontSize = '1.1rem';
+                up.title = '上传本地图片';
+                up.innerHTML = '<i class="fas fa-camera"></i>';
+                if (selected && selected.startsWith('data:image')) {
+                    up.classList.add('selected');
+                    up.innerHTML = '<img src="' + escapeAttr(selected) + '" alt="">';
+                }
+                up.addEventListener('click', () => avatarFileEl.click());
+                avatarOptionsEl.appendChild(up);
+
+                const uploadText = document.createElement('button');
+                uploadText.type = 'button';
+                uploadText.className = 'btn btn-secondary avatar-upload-btn';
+                uploadText.innerHTML = '<i class="fas fa-upload"></i> 上传头像';
+                uploadText.addEventListener('click', () => avatarFileEl.click());
+                avatarOptionsEl.appendChild(uploadText);
+            }
+
+            function markAvatarSelected(el) {
+                avatarOptionsEl.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+                el.classList.add('selected');
+            }
+
+            function selectAvatar(val, btnEl) {
+                tempAvatar = val;
+                markAvatarSelected(btnEl);
+            }
+
+            avatarFileEl.addEventListener('change', async () => {
+                const file = avatarFileEl.files && avatarFileEl.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    alert('请选择图片文件');
+                    return;
+                }
+                try {
+                    const dataUrl = await fileToAvatarDataUrl(file);
+                    tempAvatar = dataUrl;
+                    // 上传图选中态落在相机按钮上并显示缩略图
+                    const camBtn = avatarOptionsEl.querySelector('.avatar-option[title="上传本地图片"]');
+                    if (camBtn) {
+                        camBtn.innerHTML = '<img src="' + escapeAttr(dataUrl) + '" alt="">';
+                        markAvatarSelected(camBtn);
+                    }
+                } catch (err) {
+                    alert('头像读取失败，请换一张图片试试');
+                } finally {
+                    avatarFileEl.value = '';
+                }
+            });
+
+            // 爱好多选 DOM
+            const hobbyOptionsEl = document.getElementById('hobbyOptions');
+            HOBBY_CHOICES.forEach(h => {
+                const label = document.createElement('label');
+                label.className = 'check-pill';
+                label.innerHTML = `<input type="checkbox" value="${escapeAttr(h)}"><span>${escapeHtml(h)}</span>`;
+                hobbyOptionsEl.appendChild(label);
+            });
+
+            // 表单各字段
+            const pfFields = {
+                name: document.getElementById('pfName'),
+                studentId: document.getElementById('pfStudentId'),
+                gender: document.getElementById('pfGender'),
+                grade: document.getElementById('pfGrade'),
+                college: document.getElementById('pfCollege'),
+                major: document.getElementById('pfMajor'),
+                birthday: document.getElementById('pfBirthday'),
+                email: document.getElementById('pfEmail'),
+                phone: document.getElementById('pfPhone'),
+                bio: document.getElementById('pfBio')
+            };
+
+            function fillForm(p) {
+                pfFields.name.value = p.name || '';
+                pfFields.studentId.value = p.studentId || '';
+                pfFields.gender.value = p.gender || '';
+                pfFields.grade.value = p.grade || '';
+                pfFields.college.value = p.college || '';
+                pfFields.major.value = p.major || '';
+                pfFields.birthday.value = p.birthday || '';
+                pfFields.email.value = p.email || '';
+                pfFields.phone.value = p.phone || '';
+                pfFields.bio.value = p.bio || '';
+                hobbyOptionsEl.querySelectorAll('input').forEach(cb => {
+                    cb.checked = p.hobbies.includes(cb.value);
+                });
+                tempAvatar = p.avatar || '😀';
+                buildAvatarOptions(tempAvatar);
+            }
+
+            // 集中校验：返回错误信息数组
+            function validateProfileForm() {
+                const errors = [];
+                const name = pfFields.name.value.trim();
+                if (!name) errors.push('请填写姓名 / 昵称');
+
+                const email = pfFields.email.value.trim();
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    errors.push('邮箱格式不正确（例如 name@example.com）');
+                }
+
+                const phone = pfFields.phone.value.trim();
+                if (phone && !/^1\d{10}$/.test(phone)) {
+                    errors.push('手机号需为 11 位数字（选填，不填可留空）');
+                }
+
+                const birthday = pfFields.birthday.value;
+                if (birthday) {
+                    const t = new Date(birthday).getTime();
+                    if (Number.isNaN(t) || t < new Date('1990-01-01').getTime() || t > new Date('2012-12-31').getTime()) {
+                        errors.push('生日需在 1990-01-01 至 2012-12-31 之间（选填）');
+                    }
+                }
+                return errors;
+            }
+
+            function collectForm() {
+                return {
+                    avatar: tempAvatar,
+                    name: pfFields.name.value.trim(),
+                    studentId: pfFields.studentId.value.trim(),
+                    gender: pfFields.gender.value,
+                    grade: pfFields.grade.value,
+                    college: pfFields.college.value.trim(),
+                    major: pfFields.major.value.trim(),
+                    birthday: pfFields.birthday.value,
+                    email: pfFields.email.value.trim(),
+                    phone: pfFields.phone.value.trim(),
+                    hobbies: Array.from(hobbyOptionsEl.querySelectorAll('input:checked')).map(cb => cb.value),
+                    bio: pfFields.bio.value.trim()
+                };
+            }
+
+            // 资料弹窗元素与视图切换
+            const profileOverlay = document.getElementById('profileOverlay');
+            const profileFormView = document.getElementById('profileFormView');
+            const profileDisplayView = document.getElementById('profileDisplayView');
+            const profileErrorBox = document.getElementById('profileErrorBox');
+            const profileErrorList = document.getElementById('profileErrorList');
+            const profileEntryBtn = document.getElementById('profileEntryBtn');
+            const chipAvatar = document.getElementById('chipAvatar');
+            const chipText = document.getElementById('chipText');
+
+            function openProfileModal() {
+                if (profile) {
+                    renderDisplayView(profile);
+                } else {
+                    fillForm(emptyProfile());
+                    profileErrorBox.classList.remove('active');
+                    profileFormView.hidden = false;
+                    profileDisplayView.hidden = true;
+                }
+                profileOverlay.classList.add('active');
+                const pm = profileOverlay.querySelector('.modal');
+                if (pm) pm.scrollTop = 0;
+            }
+
+            function closeProfileModal() {
+                profileOverlay.classList.remove('active');
+            }
+
+            function showFormView() {
+                fillForm(profile || emptyProfile());
+                profileErrorBox.classList.remove('active');
+                profileDisplayView.hidden = true;
+                profileFormView.hidden = false;
+                const pm = profileOverlay.querySelector('.modal');
+                if (pm) pm.scrollTop = 0;
+            }
+
+            // 展示视图渲染
+            function renderDisplayView(p) {
+                profileFormView.hidden = true;
+                profileDisplayView.hidden = false;
+
+                renderAvatarInto(document.getElementById('displayAvatar'), p.avatar);
+                document.getElementById('displayName').textContent = p.name || '同学';
+                const subParts = [p.grade, p.college, p.major].filter(Boolean);
+                document.getElementById('displaySub').textContent = subParts.join(' · ') || '未填写院系信息';
+
+                setInfo('displayStudentId', p.studentId, '未填写');
+                setInfo('displayGender', p.gender, '未填写');
+                setInfo('displayGrade', p.grade, '未填写');
+                setInfo('displayBirthday', p.birthday, '未填写');
+                setInfo('displayEmail', p.email, '未填写');
+                setInfo('displayPhone', p.phone, '未填写');
+                setInfo('displayBio', p.bio, '这个人很神秘，还没有写简介');
+
+                const hobbiesEl = document.getElementById('displayHobbies');
+                if (p.hobbies.length) {
+                    hobbiesEl.innerHTML = p.hobbies.map(h => `<span class="hobby-tag">${escapeHtml(h)}</span>`).join('');
+                } else {
+                    hobbiesEl.innerHTML = '<span class="info-value empty" style="font-size:0.9rem;">未选择</span>';
+                }
+
+                // 已加入社团联动
+                const joined = clubs.filter(c => c.joined);
+                const joinedEl = document.getElementById('displayJoinedClubs');
+                if (joined.length) {
+                    joinedEl.innerHTML = '<div class="profile-club-list">' + joined.map(c =>
+                        `<div class="profile-club-item"><i class="fas ${getIconClass(c.icon)}"></i>${escapeHtml(c.name)}<span class="club-tag" style="margin-left:auto;">${escapeHtml(c.category)}</span></div>`
+                    ).join('') + '</div>';
+                } else {
+                    joinedEl.innerHTML = '<div class="profile-club-empty">还没有加入社团，去"发现社团"看看吧～</div>';
+                }
+            }
+
+            function setInfo(id, value, emptyText) {
+                const el = document.getElementById(id);
+                if (value) {
+                    el.textContent = value;
+                    el.classList.remove('empty');
+                } else {
+                    el.textContent = emptyText;
+                    el.classList.add('empty');
+                }
+            }
+
+            // 同步头部入口
+            function syncProfileChip() {
+                if (profile) {
+                    renderAvatarInto(chipAvatar, profile.avatar);
+                    chipText.textContent = profile.name || '我的资料';
+                } else {
+                    chipAvatar.classList.add('emoji');
+                    chipAvatar.innerHTML = '<i class="fas fa-user"></i>';
+                    chipText.textContent = '填写我的资料';
+                }
+            }
+
+            // ---------- 资料弹窗事件 ----------
+            profileEntryBtn.addEventListener('click', openProfileModal);
+            document.getElementById('profileCloseBtn').addEventListener('click', closeProfileModal);
+            document.getElementById('profileCloseBtn2').addEventListener('click', closeProfileModal);
+            document.getElementById('profileCancelBtn').addEventListener('click', closeProfileModal);
+            document.getElementById('profileEditBtn').addEventListener('click', showFormView);
+
+            profileOverlay.addEventListener('click', (e) => {
+                if (e.target === profileOverlay) closeProfileModal();
+            });
+
+            document.getElementById('profileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const errors = validateProfileForm();
+                if (errors.length) {
+                    profileErrorList.innerHTML = errors.map(msg => `<li>${escapeHtml(msg)}</li>`).join('');
+                    profileErrorBox.classList.add('active');
+                    return;
+                }
+                profileErrorBox.classList.remove('active');
+                profile = collectForm();
+                try {
+                    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+                } catch (err) {
+                    alert('保存失败：浏览器本地存储空间不足，建议换用预设 emoji 头像（不上传图片）。');
+                    return;
+                }
+                syncProfileChip();
+                renderDisplayView(profile);
+            });
+
+            // 首次加载同步入口
+            syncProfileChip();
+
+            // 重置筛选和搜索 (并不重置数据)
+            function resetFilters() {
+                activeCategory = 'all';
+                searchQuery = '';
+                searchInput.value = '';
+                // 更新按钮激活样式
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.dataset.category === 'all') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            // 初始化/渲染 (首次)
+            renderClubs();
+
+            // 详情编辑用的封面选择器（变化时实时预览封面）
+            const detailCoverPicker = buildCoverPicker(
+                document.getElementById('detailCoverPicker'),
+                onDetailCoverChange
+            );
+
+            // 创建社团表单用的封面选择器
+            const createCoverPicker = buildCoverPicker(
+                document.getElementById('createCoverPicker'),
+                () => {}
+            );
+
+            // ---------- 事件监听 ----------
+
+            // 分类过滤
+            filterTabs.addEventListener('click', (e) => {
+                const btn = e.target.closest('.filter-btn');
+                if (!btn) return;
+                const category = btn.dataset.category;
+                activeCategory = category;
+
+                // 更新按钮样式
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 如果切换分类，保留搜索词 (不重置搜索)
+                renderClubs();
+            });
+
+            // 搜索按钮
+            searchBtn.addEventListener('click', () => {
+                searchQuery = searchInput.value;
+                renderClubs();
+            });
+
+            // 输入框支持回车搜索
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchQuery = searchInput.value;
+                    renderClubs();
+                }
+            });
+
+            // 创建社团卡片点击 -> 打开模态框
+            createClubCard.addEventListener('click', () => {
+                createClubForm.reset();
+                createCoverPicker.reset('');
+                modalOverlay.classList.add('active');
+                const m = modalOverlay.querySelector('.modal');
+                if (m) m.scrollTop = 0;
+            });
+
+            // 取消按钮 / 点击遮罩关闭
+            cancelBtn.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+                createClubForm.reset();
+                createCoverPicker.reset('');
+            });
+
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+
+            // ---------- 详情弹窗事件 ----------
+
+            detailCloseBtn.addEventListener('click', closeClubDetail);
+
+            detailOverlay.addEventListener('click', (e) => {
+                if (e.target === detailOverlay) {
+                    closeClubDetail();
+                }
+            });
+
+            editDetailBtn.addEventListener('click', enterEditMode);
+            cancelEditBtn.addEventListener('click', () => {
+                // 放弃未保存的封面/介绍修改，恢复展示态
+                const club = clubs.find(c => c.id === currentDetailId);
+                if (club) renderClubDetail(club);
+                exitEditMode();
+            });
+            saveDetailBtn.addEventListener('click', saveClubDetail);
+
+            // 详情弹窗内点击"加入社团" / "退出社团"
+            detailJoinBtn.addEventListener('click', () => {
+                if (!currentDetailId) return;
+                const club = clubs.find(c => c.id === currentDetailId);
+                if (!club) return;
+                if (club.joined) {
+                    leaveClub(currentDetailId);
+                } else {
+                    joinClub(currentDetailId);
+                }
+            });
+
+            // Esc 关闭任意打开的弹窗
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                if (profileOverlay.classList.contains('active')) {
+                    closeProfileModal();
+                } else if (detailOverlay.classList.contains('active')) {
+                    closeClubDetail();
+                } else if (modalOverlay.classList.contains('active')) {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+
+            // 提交创建社团表单
+            createClubForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('clubName').value.trim();
+                const category = document.getElementById('clubCategory').value;
+                const description = document.getElementById('clubDescription').value.trim();
+                const detail = document.getElementById('clubDetail').value.trim();
+                const iconSelect = document.getElementById('clubIcon');
+                const icon = iconSelect.value; // 例如 'fa-star'
+
+                if (!name || !description) {
+                    alert('请填写社团名称和描述');
+                    return;
+                }
+
+                // 创建新社团对象
+                const newClub = {
+                    id: 'c' + Date.now() + Math.random().toString(36).substr(2, 4),
+                    name: name,
+                    category: category,
+                    description: description,
+                    detail: detail,       // 详细介绍（可为空，之后在详情页补充）
+                    cover: createCoverPicker.value,  // 封面（可选：预设/链接/上传图）
+                    members: 1,          // 创建者自己算一个成员
+                    icon: icon,
+                    joined: true         // 创建者默认已加入
+                };
+
+                // 添加到数组并持久化
+                clubs.push(newClub);
+                if (!saveClubs()) {
+                    clubs.pop();  // 存储失败（如上传图过大）则回滚
+                    alert('创建失败：浏览器本地存储空间不足。\n建议封面改用"图片链接"方式，或上传更小的图片。');
+                    return;
+                }
+
+                // 重置表单与封面选择器
+                createClubForm.reset();
+                createCoverPicker.reset('');
+
+                // 关闭模态框
+                modalOverlay.classList.remove('active');
+
+                // 如果当前分类与新建社团不符，可能看不到。但可以重置筛选到全部，并清空搜索
+                resetFilters(); // 重置为全部、清空搜索
+
+                // 重新渲染
+                renderClubs();
+
+                // 滚动到社团区域，让用户看到自己的新社团
+                document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            // 点击社团卡片其他区域可以查看详情？ 暂时不需要，但保留
+
+            // 处理 分类“其他”的映射（因为界面只有：全部、学术、艺术、运动、科技）
+            // 但我们的过滤器已经包括了“其他”处理逻辑。然而UI上的按钮只有全部/学术/艺术/运动/科技,
+            // 其实没有“其他”按钮，但我们的数据里有益行志愿者协会(category:其他)，
+            // 在“全部”中显示。如果想单独筛选“其他”目前没有按钮，但没必要，暂时保持这样。
+            // 可以添加“其他”按钮，但为了简洁，就不加了。
+            // 调整一下：把“益行志愿者协会”分类改为“公益”但也不影响，界面上分类只有四种。
+            // 但用户可能会看到“其他”标签，没关系。
+
+            // 添加一个微调：因为过滤器中“运动”分类，我们数据中有“运动”，OK。
+            // 而“科技”、“艺术”、“学术”都有对应的，还有“其他”在全部中显示。
+            // 如果想看到所有分类，分类按钮已经够了。
+
+            // 另外，我们还可以在创建社团里加入图标下拉，已实现。
+
+            // 为所有卡片加入悬停效果已在CSS中。
+
+            // 如果新创建社团的分类是“其他”，而过滤器无法筛选，但全部可见。也OK。
+
+            // 注意: 筛选逻辑中，如果分类为“其他”，我们的activeCategory没有'其他'按钮, 但也无妨。
+            // 在activeCategory为'all'时全部展示, 为学术/艺术/运动/科技时按分类过滤,
+            // 但如果用户创建了“其他”类社团，选中“学术”时不会出现。没问题。
+
+            // 最后，调整一下搜索占位。
+
+            // 完美！ 开始运行。
+
+        })();
+    </script>
+</body>
+</html>
